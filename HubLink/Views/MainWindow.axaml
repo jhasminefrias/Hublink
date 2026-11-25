@@ -1,0 +1,84 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="HubLink.Views.MainWindow"
+        Title="HubLink - Shipment Monitor" Width="980" Height="680" MinWidth="800" MinHeight="520">
+  <DockPanel Margin="12">
+
+    <!-- Status bar -->
+    <Border DockPanel.Dock="Bottom" Padding="8" Margin="0,8,0,0" CornerRadius="4" Background="#22888888">
+      <Panel>
+        <TextBlock Text="{Binding StatusMessage}" Foreground="Firebrick" FontWeight="SemiBold" TextWrapping="Wrap" IsVisible="{Binding IsError}" />
+        <TextBlock Text="{Binding StatusMessage}" FontWeight="SemiBold" TextWrapping="Wrap" IsVisible="{Binding !IsError}" />
+      </Panel>
+    </Border>
+
+    <!-- Header + controls -->
+    <StackPanel DockPanel.Dock="Top" Spacing="8">
+      <TextBlock Text="HubLink - Regional Logistics Shipments" FontSize="20" FontWeight="Bold" />
+      <TextBlock Text="{Binding BranchCode, StringFormat='Branch: {0}'}" />
+      <TextBlock Text="{Binding RequestUrl, StringFormat='Request: {0}'}" FontSize="11" Opacity="0.7" />
+
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <Button Content="{Binding RefreshButtonText}" Command="{Binding RefreshCommand}" Classes="accent" />
+        <TextBlock Text="Status:" VerticalAlignment="Center" />
+        <ComboBox ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding SelectedStatus}" Width="150" />
+        <Button Content="Export CSV" Command="{Binding ExportCsvCommand}" />
+        <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsLoading}">
+          <ProgressBar IsIndeterminate="True" Width="120" />
+          <TextBlock Text="Retrieving shipments..." VerticalAlignment="Center" />
+        </StackPanel>
+      </StackPanel>
+
+      <Border Background="#33FFA500" Padding="8" CornerRadius="4" IsVisible="{Binding HasStaleNotice}">
+        <TextBlock Text="{Binding StaleNotice}" TextWrapping="Wrap" FontWeight="SemiBold" />
+      </Border>
+
+      <!-- Summary (all retrieved shipments, independent of the filter) -->
+      <Grid ColumnDefinitions="*,*,*,*,*" Margin="0,4,0,4">
+        <Border Grid.Column="0" Margin="0,0,6,0" Padding="8" CornerRadius="4" Background="#22888888">
+          <StackPanel><TextBlock Text="Total" /><TextBlock Text="{Binding Summary.Total}" FontSize="24" FontWeight="Bold" /></StackPanel>
+        </Border>
+        <Border Grid.Column="1" Margin="0,0,6,0" Padding="8" CornerRadius="4" Background="#22888888">
+          <StackPanel><TextBlock Text="Pending" /><TextBlock Text="{Binding Summary.PendingCount}" FontSize="24" FontWeight="Bold" /></StackPanel>
+        </Border>
+        <Border Grid.Column="2" Margin="0,0,6,0" Padding="8" CornerRadius="4" Background="#22888888">
+          <StackPanel><TextBlock Text="InTransit" /><TextBlock Text="{Binding Summary.InTransitCount}" FontSize="24" FontWeight="Bold" /></StackPanel>
+        </Border>
+        <Border Grid.Column="3" Margin="0,0,6,0" Padding="8" CornerRadius="4" Background="#22888888">
+          <StackPanel><TextBlock Text="Delivered" /><TextBlock Text="{Binding Summary.DeliveredCount}" FontSize="24" FontWeight="Bold" /></StackPanel>
+        </Border>
+        <Border Grid.Column="4" Padding="8" CornerRadius="4" Background="#22888888">
+          <StackPanel><TextBlock Text="Exception" /><TextBlock Text="{Binding Summary.ExceptionCount}" FontSize="24" FontWeight="Bold" /></StackPanel>
+        </Border>
+      </Grid>
+
+      <!-- Column headers -->
+      <Grid ColumnDefinitions="130,190,190,110,*" Margin="8,4,8,0">
+        <TextBlock Grid.Column="0" Text="Tracking No." FontWeight="Bold" />
+        <TextBlock Grid.Column="1" Text="Origin" FontWeight="Bold" />
+        <TextBlock Grid.Column="2" Text="Destination" FontWeight="Bold" />
+        <TextBlock Grid.Column="3" Text="Status" FontWeight="Bold" />
+        <TextBlock Grid.Column="4" Text="Last Updated (local time)" FontWeight="Bold" />
+      </Grid>
+    </StackPanel>
+
+    <!-- Shipment list -->
+    <Panel>
+      <ListBox ItemsSource="{Binding Shipments}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="130,190,190,110,*">
+              <TextBlock Grid.Column="0" Text="{Binding TrackingNumber}" />
+              <TextBlock Grid.Column="1" Text="{Binding Origin}" TextTrimming="CharacterEllipsis" />
+              <TextBlock Grid.Column="2" Text="{Binding Destination}" TextTrimming="CharacterEllipsis" />
+              <TextBlock Grid.Column="3" Text="{Binding Status}" />
+              <TextBlock Grid.Column="4" Text="{Binding LastUpdated}" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <TextBlock Text="{Binding EmptyListText}" IsVisible="{Binding HasEmptyListText}"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.7" />
+    </Panel>
+  </DockPanel>
+</Window>
