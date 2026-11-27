@@ -2,7 +2,6 @@
 
 Avalonia / MVVM desktop client (C# / .NET 10) that retrieves shipments for one branch from the instructor-provided HubLink API, shows them, filters by status, summarizes counts, and exports the displayed list to CSV.
 
-**Team:** `<Member 1>` and `<Member 2>`
 
 ## Requirements
 - .NET 10 SDK (or the SDK your instructor specifies)
@@ -45,5 +44,4 @@ No database or EF Core migrations are used in this task.
 
 Docs: `docs/VerificationChecklist.md`. Sample export: `samples/`.
 
-## Acknowledgments
-AI assistance (Claude) was used to generate the initial project structure and code. We reviewed, ran, and understand the submitted work. `<Add anything else you used or changed.>`
+
